@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Admin Dashboard</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% csrf_token %}
+        <input type="hidden" id="csrf" value="{{ csrf_token }}">
+
+        <h2>Admin Dashboard</h2>
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.role }}</td>
+                <td>
+                    <button onclick="editUser({{ u.id }})">Edit</button>
+                    <button onclick="deleteUser({{ u.id }})">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <script>
+            const csrfToken = document.getElementById("csrf").value;
+
+            function deleteUser(id) {
+                fetch(`http://127.0.0.1:8000/api/admin/users/${id}/`, {
+                    method: "DELETE",
+                    headers: { "X-CSRFToken": csrfToken },
+                    credentials: "include"
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.detail);
+                    location.reload();
+                });
+            }
+
+            function editUser(id) {
+                const newUsername = prompt("Enter new username:");
+                if (!newUsername) return;
+
+                fetch(`http://127.0.0.1:8000/api/admin/users/${id}/edit/`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify({ username: newUsername })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.detail);
+                    location.reload();
+                });
+            }
+        </script>
+    </body>
+</html>

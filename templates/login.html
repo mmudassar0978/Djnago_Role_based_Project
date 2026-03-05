@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Login</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+
+        <style>
+            body {
+                background-color: #f7f7f7;
+                font-family: Arial;
+            }
+
+            form {
+                width: 300px;
+                padding: 20px;
+                background: white;
+                margin: auto;
+                border: 2px solid black;
+                border-radius: 10px;
+                padding: 70px 50px;
+            }
+
+            input {
+                width: 100%;
+                padding: 10px;
+            }
+    </style>
+    </head>
+    <body>
+        
+        <form id="loginForm">
+            <input type="hidden" id="csrf" value="{{ csrf_token }}">
+
+            <h2>Login</h2>
+
+            <label for="username">Enter Username:</label>
+            <input type="text" name="username" placeholder="Username" required>
+            <br><br>
+
+            <label for="password">Enter Password:</label>
+            <input type="password" name="password" placeholder="Password" required>
+            <br><br>
+
+            <button id="btn" type="submit">Login</button>
+
+        </form>
+        <p style="color:red" id="error"></p>
+
+        <script>
+            let btn = document.getElementById("btn");
+            let form = document.getElementById("loginForm");
+
+            btn.addEventListener('click', async function(e) {
+                e.preventDefault();
+
+                let csrfToken = document.getElementById("csrf").value;
+                let formData = new FormData(form); 
+
+                let res = await fetch("http://127.0.0.1:8000/login/", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken
+                    },
+                    credentials: "include",
+                    body: formData
+                });
+
+                let data = await res.json();
+
+                if (res.ok) {
+                    alert("Login successful");
+                    window.location.href = data.redirect;  
+                } else {
+                    document.getElementById("error").innerText = data.detail;
+                }
+            });
+        </script>
+    </body>
+</html>
