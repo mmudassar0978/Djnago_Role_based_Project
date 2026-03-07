@@ -32,4 +32,4 @@ jobs:
           kubectl apply -f app_deployment.yaml
           kubectl rollout restart deployment django-deployment
           kubectl apply -f service.yaml
-          kubectl apply -f service_monitor.yaml
+          kubectl apply -f service__monitor.yaml
