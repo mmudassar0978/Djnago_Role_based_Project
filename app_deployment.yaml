@@ -1,0 +1,23 @@
+piVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image:  mudassar9530/django-backend:latest
+          ports:
+            - containerPor: 8080
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: django-backend
+
