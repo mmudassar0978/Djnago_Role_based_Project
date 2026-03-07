@@ -16,7 +16,7 @@ spec:
         - name: django
           image:  mudassar9530/django-backend:latest
           ports:
-            - containerPor: 8080
+            - containerPort: 8080
           imagePullPolicy: Always
       imagePullSecrets:
         - name: django-backend
