@@ -27,9 +27,14 @@ jobs:
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/django-backend:latest
 
-      - name: Deploy to Minikube
+       - name: Update deployment file
         run: |
-          kubectl apply -f app_deployment.yaml
-          kubectl rollout restart deployment django-deployment
-          
-        
+          sed -i "s|image: .*|image: ${{ secrets.DOCKERHUB_USERNAME }}/django-backend:${{ github.sha }}|" app_deployment.yaml
+
+      - name: Commit and push
+        run: |
+          git config user.name "Mohammad Mudassar"
+          git config user.email "mudassirishaq8@gmail.com"
+          git add app_deployment.yaml
+          git commit -m "Update image"
+          git push
