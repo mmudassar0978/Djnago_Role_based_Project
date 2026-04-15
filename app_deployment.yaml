@@ -21,3 +21,19 @@ spec:
       imagePullSecrets:
         - name: django-backend
 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-service
+spec:
+  selector:
+    app: django
+  type: NodePort
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30080
+
+
